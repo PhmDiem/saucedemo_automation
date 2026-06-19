@@ -8,15 +8,15 @@ class LoginPage(BasePage):
         self.username_input = (By.ID, "user-name")
         self.password_input = (By.ID, "password")
         self.login_button = (By.ID, "login-button")
+        self.error_mgs= (By.XPATH, '//div[@class="error-message-container error"]')
         
-    def enter_username(self, username):
+    def login(self, username, password):
         self.send_keys(self.username_input, username)
-
-    def enter_password(self, password):
         self.send_keys(self.password_input, password)
-
-    def click_login_button(self):
         self.click(self.login_button)
 
     def is_login_page_displayed(self):
-        return self.is_displayed(self.login_button)   
+        return self.is_displayed(self.login_button)  
+
+    def is_error_message_displayed(self):
+        return self.is_displayed(self.error_mgs)
