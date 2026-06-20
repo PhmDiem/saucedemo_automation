@@ -17,6 +17,19 @@ class InventoryPage(BasePage):
 
     def get_inventory_items(self):
         return self.wait_visible(self.inventory_items)
+    
+    def find_item(self, product_key):
+        product = ConfigReader.get_product(product_key)
+        item_link = (By.ID, product["add_to_cart_id"])
+        return self.find_element(item_link)
+    
+    def is_inventory_item_displayed(self, product_key):
+        product = ConfigReader.get_product(product_key)
+        if not product:
+            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
+        
+        item_link = (By.ID, product["add_to_cart_id"])
+        return self.is_displayed(item_link)
 
     def click_inventory_item(self, product_key):
         product = ConfigReader.get_product(product_key)

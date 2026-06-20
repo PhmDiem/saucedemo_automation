@@ -1,23 +1,20 @@
 import pytest
-from selenium import webdriver
-from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from selenium.webdriver.common.action_chains import ActionChains
 
-def test_hover_over_element(driver):
-    login_page = LoginPage(driver)
-    login_page.enter_username("standard_user")
-    login_page.enter_password("secret_sauce")
-    login_page.click_login_button()
-    
+@pytest.mark.hover
+def test_hover_over_element(driver, login):
     inventory_page = InventoryPage(driver)
-    item = inventory_page.wait_visible(inventory_page.item_1)
+
+    # Lấy nút "Add to cart" cho sản phẩm "backpack" (trả về WebElement)
+    add_btn = inventory_page.find_item("backpack")
 
     actions = ActionChains(driver)
-    actions.move_to_element(item).perform()  # Hover vào item đầu tiên
-    print('\nĐã hover vào item đầu tiên')
+    actions.move_to_element(add_btn).perform()  # Hover vào nút/element
+    print('\nĐã hover vào item backpack')
 
-    add_to_cart_btn = inventory_page.wait_clickable(inventory_page.add_to_cart_1)
-    add_to_cart_btn.click()  # Click vào nút Add to cart sau khi hover
+    add_btn.click()  # Click vào nút Add to cart sau khi hover
     print('Đã click vào Add to cart sau khi hover')
-    assert inventory_page.is_displayed(inventory_page.remove_1)  # Kiểm tra
+
+    # Kiểm tra nút Remove đã xuất hiện sau khi thêm vào giỏ hàng
+    assert inventory_page.is_remove_button_displayed("backpack")

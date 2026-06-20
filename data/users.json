@@ -1,0 +1,64 @@
+{
+    "users": {
+        "standard": {
+            "username": "standard_user",
+            "password": "secret_sauce"
+        },
+        "locked_out": {
+            "username": "locked_out_user",
+            "password": "secret_sauce"
+        },
+        "problem": {
+            "username": "problem_user",
+            "password": "secret_sauce"
+        },
+        "performance": {
+            "username": "performance_glitch_user",
+            "password": "secret_sauce"
+        },
+        "error": {
+            "username": "error_user",
+            "password": "secret_sauce"
+        },
+        "visual": {
+            "username": "visual_user",
+            "password": "secret_sauce"
+        },
+        "wrong_username": {
+            "username": "abcdefg",
+            "password": "secret_sauce"
+        },
+        "wrong_password": {
+            "username": "standard_user",
+            "password": "abcdefg"
+        },
+        "wrong_both": {
+            "username": "abcdefg",
+            "password": "abcdefg"
+        },
+        "empty_username": {
+            "username": "",
+            "password": "secret_sauce"
+        },
+        "empty_password": {
+            "username": "standard_user",
+            "password": ""
+        },
+        "empty_both": {
+            "username": "",
+            "password": ""
+        }, 
+        "space_username": {
+            "username": "  ",
+            "password": "secret_sauce"
+        },
+        "space_password": {
+            "username": "standard_user",
+            "password": "  "
+        },
+        "space_both": {
+            "username": "  ",
+            "password": "  "
+        }
+    }
+}
