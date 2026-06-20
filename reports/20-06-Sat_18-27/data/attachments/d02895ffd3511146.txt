@@ -1,0 +1,3 @@
+
+Đã hover vào item backpack
+Đã click vào Add to cart sau khi hover
