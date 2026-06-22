@@ -2,18 +2,32 @@ import pytest
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from utils.config_reader import ConfigReader
+from selenium.webdriver.support.ui import Select
 
 class InventoryPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
 
         self.title = (By.XPATH, '//span[@class="title"]')
+        self.sort_container = (By.XPATH, '//select[@class="product_sort_container"]')
         self.inventory_items = (By.CLASS_NAME, "inventory_item")
         self.number_of_items_in_cart = (By.CLASS_NAME, "shopping_cart_badge")
         self.cart_button = (By.ID, "shopping_cart_container")
 
     def is_title_displayed(self):
         return self.is_displayed(self.title)
+    
+    def select_sort(self, sort_option: str):
+        dropdown = Select(self.driver.find_element(*self.sort_container))
+        dropdown.select_by_value(sort_option)
+
+    def get_item_names(self) -> list[str]:
+        elements = self.driver.find_elements(By.CLASS_NAME, "inventory_item_name")
+        return [el.text for el in elements]
+
+    def get_item_prices(self) -> list[float]:
+        elements = self.driver.find_elements(By.CLASS_NAME, "inventory_item_price")
+        return [float(el.text.replace("$", "")) for el in elements]    
 
     def get_inventory_items(self):
         return self.wait_visible(self.inventory_items)
