@@ -1,19 +1,63 @@
 import pytest
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from tempfile import TemporaryDirectory
 from utils.config_reader import ConfigReader
+from pages.login_page import LoginPage
 from datetime import datetime
 import allure
 import os
 
 @pytest.fixture(scope="function")
 def driver():
-    driver = webdriver.Firefox()
-    driver.maximize_window()
-    driver.implicitly_wait(ConfigReader.get_timeout())
-    driver.get(ConfigReader.get_url())
-    yield driver
-    driver.quit()
+    options = webdriver.ChromeOptions()
+    temp_profile = TemporaryDirectory(prefix="sauce_demo_")
+
+    if ConfigReader.is_headless():
+        options.add_argument("--headless=new")
+        options.add_argument("--window-size=1920,1080")
+
+    driver = webdriver.Chrome(options=options)
+
+    if not ConfigReader.is_headless():
+        driver.maximize_window()
+
+    options.add_argument(f"--user-data-dir={temp_profile.name}")
+
+    prefs = {
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False,
+        "profile.password_manager_leak_detection": False,
+        "autofill.profile_enabled": False,
+        "autofill.credit_card_enabled": False,
+    }
+
+    options.add_experimental_option("prefs", prefs)
+    options.add_argument("--disable-notifications")
+    options.add_argument("--disable-popup-blocking")
+    options.add_argument("--disable-features=PasswordCheck")
+    options.add_argument("--disable-features=PasswordManagerOnboarding")
+    options.add_argument("--disable-features=AutofillServerCommunication")
+    options.add_argument("--no-default-browser-check")
+    options.add_argument("--no-first-run")
+
+    driver = None
+    try:
+        driver = webdriver.Chrome(options=options)
+        driver.implicitly_wait(ConfigReader.get_implicit_wait())
+        driver.set_page_load_timeout(ConfigReader.get_explicit_wait())
+        driver.maximize_window()
+        driver.get(ConfigReader.get_url())
+        yield driver
+    finally:
+        if driver is not None:
+            try:
+                driver.quit()
+            except Exception:
+                pass
+        try:
+            temp_profile.cleanup()
+        except Exception:
+            pass
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -51,7 +95,14 @@ def pytest_runtest_makereport(item, call):
 
 @pytest.fixture
 def login(driver):
-    from pages.login_page import LoginPage
-    login_page = LoginPage(driver)
-    login_page.login(ConfigReader.get_user("standard")["username"], ConfigReader.get_user("standard")["password"])
-    return driver
+    """Login mặc định standard_user"""
+    user = ConfigReader.get_user("standard")
+    LoginPage(driver).login(user["username"], user["password"])
+
+@pytest.fixture
+def login_as(driver):
+    """Login với user_type tùy chọn"""
+    def _login(user_type):
+        user = ConfigReader.get_user(user_type)
+        LoginPage(driver).login(user["username"], user["password"])
+    return _login

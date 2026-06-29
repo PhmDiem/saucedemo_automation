@@ -4,50 +4,56 @@ from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from utils.config_reader import ConfigReader
 
-@pytest.mark.positive
-@pytest.mark.login
-@pytest.mark.parametrize("user_type, expected_success", [
-    ("standard", True),
-    ("problem", True),
-    ("performance", True),
-    ("error", True),
-    ("visual", True)
-])
-@allure.title("Login thành công")
-def test_login_success (driver, user_type, expected_success):
-    login_page = LoginPage(driver)
-    inventory_page = InventoryPage(driver)
-    users = ConfigReader.get_user(user_type)
-    
-    login_page.login(users["username"], users["password"])
+@allure.feature("Authentication")
+class TestLogin:
 
-    if expected_success:
-        assert inventory_page.is_title_displayed()
-    else:
-        assert login_page.is_error_message_displayed()
+    @pytest.fixture(autouse=True)
+    def setup(self, driver):
+        self.driver = driver
+        self.login_page = LoginPage(driver)
+        self.inventory_page = InventoryPage(driver)
 
-@pytest.mark.negative
-@pytest.mark.login
-@pytest.mark.parametrize("user_type, expected_success", [
-    ("locked_out", False),
-    ("wrong_username", False),
-    ("wrong_password", False),
-    ("empty_username", False),
-    ("empty_password", False),
-    ("empty_both", False),
-    ("space_username", False),
-    ("space_password", False),
-    ("space_both", False)
-])
-@allure.title("Login không thành công")
-def test_login_failed (driver, user_type, expected_success):
-    login_page = LoginPage(driver)
-    inventory_page = InventoryPage(driver)
-    users = ConfigReader.get_user(user_type)
-    
-    login_page.login(users["username"], users["password"])
+    def do_login(self, user_type):
+        users = ConfigReader.get_user(user_type)
+        self.login_page.login(users["username"], users["password"])
 
-    if expected_success:
-        assert inventory_page.is_title_displayed()
-    else:
-        assert login_page.is_error_message_displayed()
+    @pytest.mark.positive
+    @pytest.mark.login
+    @allure.story("Login thành công")
+    @pytest.mark.parametrize("user_type", [
+        "standard",
+        "problem",
+        "performance",
+        "error",
+        "visual"
+    ])
+    def test_login_success(self, user_type):
+        with allure.step(f"Login với user: {user_type}"):
+            self.do_login(user_type)
+
+        with allure.step("Verify chuyển sang trang Inventory"):
+            assert self.inventory_page.is_title_displayed(), \
+                f"[{user_type}] Expect inventory page nhưng vẫn ở login"
+
+    @pytest.mark.negative
+    @pytest.mark.login
+    @allure.story("Login thất bại")
+    @pytest.mark.parametrize("user_type, expected_error", [
+        ("locked_out",     "Sorry, this user has been locked out."),
+        ("wrong_username", "Username and password do not match"),
+        ("wrong_password", "Username and password do not match"),
+        ("empty_username", "Username is required"),
+        ("empty_password", "Password is required"),
+        ("empty_both",     "Username is required"),
+        ("space_username", "Username and password do not match"),
+        ("space_password", "Username and password do not match"),
+        ("space_both",     "Username and password do not match"),
+    ])
+    def test_login_failed(self, user_type, expected_error):
+        with allure.step(f"Login với user: {user_type}"):
+            self.do_login(user_type)
+
+        with allure.step(f"Verify error: '{expected_error}'"):
+            actual_error = self.login_page.get_error_message()
+            assert expected_error in actual_error, \
+                f"[{user_type}] Expected: '{expected_error}' | Got: '{actual_error}'"

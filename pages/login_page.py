@@ -1,4 +1,3 @@
-import pytest
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
@@ -8,7 +7,7 @@ class LoginPage(BasePage):
         self.username_input = (By.ID, "user-name")
         self.password_input = (By.ID, "password")
         self.login_button = (By.ID, "login-button")
-        self.error_mgs= (By.XPATH, '//div[@class="error-message-container error"]')
+        self.error_mgs = (By.XPATH, '//div[@class="error-message-container error"]')
         
     def login(self, username, password):
         self.send_keys(self.username_input, username)
@@ -16,7 +15,10 @@ class LoginPage(BasePage):
         self.click(self.login_button)
 
     def is_login_page_displayed(self):
-        return self.is_displayed(self.login_button)  
+        return self.is_displayed(self.login_button)
 
     def is_error_message_displayed(self):
         return self.is_displayed(self.error_mgs)
+
+    def get_error_message(self) -> str:
+        return self.get_text(self.error_mgs)

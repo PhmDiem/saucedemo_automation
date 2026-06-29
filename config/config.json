@@ -1,5 +1,7 @@
 {
     "base_url": "https://www.saucedemo.com/",
+    "products_url": "https://www.saucedemo.com/inventory.html",
+    "isHeadless": true,
     "browser": "chrome",
     "timeout": {
         "implicit_wait": 10,

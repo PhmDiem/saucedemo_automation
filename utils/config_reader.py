@@ -30,7 +30,7 @@ class ConfigReader:
     @staticmethod
     def get_config():
         return ConfigReader.load_file("config", "config", "config.json")
-
+    
     @staticmethod
     def get_users():
         """Trả về dict các user từ users.json"""
@@ -46,6 +46,10 @@ class ConfigReader:
     # --- Các hàm tiện ích gọi nhanh ---
 
     @staticmethod
+    def is_headless():
+        return ConfigReader.get_config().get("isHeadless")
+
+    @staticmethod
     def get_url():
         return ConfigReader.get_config().get("base_url")
     
@@ -58,11 +62,19 @@ class ConfigReader:
         return ConfigReader.get_config().get("browser")
 
     @staticmethod
-    def get_timeout(timeout_type="implicit_wait"):
+    def get_timeout(timeout_type):
         """Lấy timeout từ config (implicit_wait hoặc explicit_wait)"""
         timeouts = ConfigReader.get_config().get("timeout", {})
         return timeouts.get(timeout_type)
-
+    
+    @staticmethod
+    def get_implicit_wait():
+        return ConfigReader.get_timeout("implicit_wait")
+    
+    @staticmethod
+    def get_explicit_wait():
+        return ConfigReader.get_timeout("explicit_wait")
+    
     @staticmethod
     def get_user(user_type):
         """Lấy thông tin user theo user_type"""
@@ -76,6 +88,20 @@ class ConfigReader:
         """Lấy thông tin của 1 sản phẩm theo key"""
         products = ConfigReader.get_products()
         return products.get(product_key)
+    
+    @staticmethod
+    def get_product_name(product_key):
+        product = ConfigReader.get_product(product_key)
+        if product is None:
+            raise KeyError(f"Không tìm thấy product_key '{product_key}' trong test_data.json")
+        return product.get("name")
+    
+    @staticmethod
+    def get_product_price(product_key):
+        product = ConfigReader.get_product(product_key)
+        if product is None:
+            raise KeyError(f"Không tìm thấy product_key '{product_key}' trong test_data.json")
+        return product.get("price")
 
     # --- Tiện ích quản lý cache ---
 
