@@ -2,31 +2,37 @@
   "products": {
     "backpack": {
       "name": "Sauce Labs Backpack",
+      "price": "$29.99",
       "add_to_cart_id": "add-to-cart-sauce-labs-backpack",
       "remove_id": "remove-sauce-labs-backpack"
     },
     "bike_light": {
       "name": "Sauce Labs Bike Light",
+      "price": "$9.99",
       "add_to_cart_id": "add-to-cart-sauce-labs-bike-light",
       "remove_id": "remove-sauce-labs-bike-light"
     },
     "bolt_tshirt": {
       "name": "Sauce Labs Bolt T-Shirt",
+      "price": "$15.99",
       "add_to_cart_id": "add-to-cart-sauce-labs-bolt-t-shirt",
       "remove_id": "remove-sauce-labs-bolt-t-shirt"
     },
     "fleece_jacket": {
       "name": "Sauce Labs Fleece Jacket",
+      "price": "$49.99",
       "add_to_cart_id": "add-to-cart-sauce-labs-fleece-jacket",
       "remove_id": "remove-sauce-labs-fleece-jacket"
     },
     "onesie": {
       "name": "Sauce Labs Onesie",
+      "price": "$7.99",
       "add_to_cart_id": "add-to-cart-sauce-labs-onesie",
       "remove_id": "remove-sauce-labs-onesie"
     },
     "red_tshirt": {
       "name": "Test.allTheThings() T-Shirt (Red)",
+      "price": "$15.99",
       "add_to_cart_id": "add-to-cart-test.allthethings()-t-shirt-(red)",
       "remove_id": "remove-test.allthethings()-t-shirt-(red)"
     }
