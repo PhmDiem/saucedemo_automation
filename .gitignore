@@ -1,23 +1,12 @@
-# Virtual environment
+# virtual env
 .venv/
-venv/
 
-# Python cache
+# python cache
 __pycache__/
-*.py[c]
-*.pyo
+*.pyc
 
-# Pytest
+# test cache
 .pytest_cache/
 
-# Allure
+# allure runtime output (KHÔNG commit)
 allure-results/
-allure-report/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db

@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","31347","test_item_info_correct_in_cart","tests","2026-06-30","broken","2026-06-30","TestCart","test_cart","",""

@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","10335","test_remove_item_from_cart_page","tests","2026-06-30","passed","2026-06-30","TestCart","test_cart","",""
+"","197","test_continue_shopping","tests","2026-06-30","passed","2026-06-30","TestCart","test_cart","",""
+"","348","test_item_displayed_in_cart","tests","2026-06-30","passed","2026-06-30","TestCart","test_cart","",""
+"","296","test_proceed_to_checkout","tests","2026-06-30","passed","2026-06-30","TestCart","test_cart","",""
+"","269","test_item_info_correct_in_cart","tests","2026-06-30","passed","2026-06-30","TestCart","test_cart","",""
