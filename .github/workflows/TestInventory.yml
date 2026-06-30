@@ -35,7 +35,7 @@ jobs:
             allure-pytest \
             requests
       - name: Run tests
-        run: pytest .\test\test_inventory.py
+        run: pytest .\tests\test_inventory.py 
 
       - name: Upload Allure results
         if: always()
