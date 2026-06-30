@@ -29,7 +29,7 @@ class InventoryPage(BasePage):
         return [float(el.text.replace("$", "")) for el in elements]    
 
     def get_inventory_items(self):
-        return self.wait_visible(self.inventory_items)
+        return self.is_element_visible(self.inventory_items)
     
     def find_item(self, product_key):
         product = ConfigReader.get_product(product_key)
@@ -49,7 +49,10 @@ class InventoryPage(BasePage):
         if not product:
             raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
 
-        item_link = (By.ID, product["add_to_cart_id"].replace("add-to-cart", "item"))
+        # Click vào product item (dùng class inventory_item)
+        # Sau đó click vào product name link bên trong
+        product_name = product["name"]
+        item_link = (By.XPATH, f'//div[@class="inventory_item"]//a[contains(., "{product_name}")]')
         self.click(item_link)
 
     def add_to_cart(self, product_key):
@@ -94,7 +97,7 @@ class InventoryPage(BasePage):
         return self.get_text(self.number_of_items_in_cart)
 
     def is_cart_badge_displayed(self):
-        return self.is_displayed(self.number_of_items_in_cart)
+        return self.is_element_visible(self.number_of_items_in_cart)
 
     def click_cart_button(self):
         self.click(self.cart_button)

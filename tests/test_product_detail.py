@@ -15,7 +15,8 @@ class TestProductDetail:
         self.inventory_page  = InventoryPage(driver)
         self.detail_page     = ProductDetailPage(driver)
         self.cart_page       = CartPage(driver)
-
+        
+    @pytest.mark.smoke
     def go_to_detail(self, product_key):
         """Helper: click vào sản phẩm từ inventory"""
         self.inventory_page.click_inventory_item(product_key)

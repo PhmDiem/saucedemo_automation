@@ -22,11 +22,15 @@ class BasePage:
     def is_displayed(self, locator):
         return self.wait.until(EC.visibility_of_element_located(locator)).is_displayed()
     
+    def is_element_visible(self, locator):
+        """Check if element is visible, return False if not found (không throw exception)"""
+        try:
+            return EC.visibility_of_element_located(locator)(self.driver) is not False
+        except:
+            return False
+    
     def get_text(self, locator):
         return self.find_element(locator).text
-
-    def wait_visible(self, locator):
-        return self.wait.until(EC.visibility_of_element_located(locator))
 
     def click(self, locator):
         self.wait.until(EC.element_to_be_clickable(locator)).click()

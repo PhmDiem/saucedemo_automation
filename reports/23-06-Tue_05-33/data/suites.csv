@@ -1,5 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","120","test_sort_a_to_z","tests","2026-06-23","passed","2026-06-23","TestInventory","test_inventory","",""
-"","315","test_sort_price_low_to_high","tests","2026-06-23","passed","2026-06-23","TestInventory","test_inventory","",""
-"","308","test_sort_price_high_to_low","tests","2026-06-23","passed","2026-06-23","TestInventory","test_inventory","",""
-"","312","test_sort_z_to_a","tests","2026-06-23","passed","2026-06-23","TestInventory","test_inventory","",""
