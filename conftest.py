@@ -16,11 +16,6 @@ def driver():
         options.add_argument("--headless=new")
         options.add_argument("--window-size=1920,1080")
 
-    driver = webdriver.Chrome(options=options)
-
-    if not ConfigReader.is_headless():
-        driver.maximize_window()
-
     options.add_argument(f"--user-data-dir={temp_profile.name}")
 
     prefs = {
@@ -42,10 +37,13 @@ def driver():
 
     driver = None
     try:
+        # Configure every option before creating the session. Creating a
+        # driver earlier would leak a browser and ignore the options below.
         driver = webdriver.Chrome(options=options)
         driver.implicitly_wait(ConfigReader.get_implicit_wait())
         driver.set_page_load_timeout(ConfigReader.get_explicit_wait())
-        driver.maximize_window()
+        if not ConfigReader.is_headless():
+            driver.maximize_window()
         driver.get(ConfigReader.get_url())
         yield driver
     finally:
@@ -64,12 +62,12 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
 
-    # Chỉ chụp và attach khi test fail
+    # Capture and attach a screenshot only when a test fails.
     if report.when == "call" and report.failed:
         driver = item.funcargs.get("driver")
         if driver is not None:
             try:
-                # Tạo folder screenshots
+                # Create the screenshots directory.
                 screenshot_dir = "screenshots"
                 os.makedirs(screenshot_dir, exist_ok=True)
 
@@ -77,10 +75,10 @@ def pytest_runtest_makereport(item, call):
                 file_name = f"{item.name}_{timestamp}.png"
                 screenshot_path = os.path.join(screenshot_dir, file_name)
 
-                # Chụp ảnh
+                # Capture the screenshot.
                 driver.save_screenshot(screenshot_path)
 
-                # Attach vào Allure Report
+                # Attach it to the Allure report.
                 with open(screenshot_path, "rb") as image_file:
                     allure.attach(
                         image_file.read(),
@@ -88,20 +86,20 @@ def pytest_runtest_makereport(item, call):
                         attachment_type=allure.attachment_type.PNG
                     )
 
-                print(f"Đã chụp và attach screenshot: {file_name}")
+                print(f"Screenshot captured and attached: {file_name}")
 
             except Exception as e:
-                print(f"Không thể chụp screenshot: {e}")    
+                print(f"Could not capture screenshot: {e}")
 
 @pytest.fixture
 def login(driver):
-    """Login mặc định standard_user"""
+    """Log in as standard_user by default."""
     user = ConfigReader.get_user("standard")
     LoginPage(driver).login(user["username"], user["password"])
 
 @pytest.fixture
 def login_as(driver):
-    """Login với user_type tùy chọn"""
+    """Log in with a selected user_type."""
     def _login(user_type):
         user = ConfigReader.get_user(user_type)
         LoginPage(driver).login(user["username"], user["password"])

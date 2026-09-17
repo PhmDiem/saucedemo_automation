@@ -19,7 +19,7 @@ class TestLogin:
 
     @pytest.mark.positive
     @pytest.mark.login
-    @allure.story("Login thành công")
+    @allure.story("Successful login")
     @pytest.mark.parametrize("user_type", [
         "standard",
         "problem",
@@ -28,16 +28,16 @@ class TestLogin:
         "visual"
     ])
     def test_login_success(self, user_type):
-        with allure.step(f"Login với user: {user_type}"):
+        with allure.step(f"Log in with user: {user_type}"):
             self.do_login(user_type)
 
-        with allure.step("Verify chuyển sang trang Inventory"):
+        with allure.step("Verify navigation to Inventory"):
             assert self.inventory_page.is_title_displayed(), \
-                f"[{user_type}] Expect inventory page nhưng vẫn ở login"
+                f"[{user_type}] Expected Inventory page but remained on login page"
 
     @pytest.mark.negative
     @pytest.mark.login
-    @allure.story("Login thất bại")
+    @allure.story("Failed login")
     @pytest.mark.parametrize("user_type, expected_error", [
         ("locked_out",     "Sorry, this user has been locked out."),
         ("wrong_username", "Username and password do not match"),
@@ -50,7 +50,7 @@ class TestLogin:
         ("space_both",     "Username and password do not match"),
     ])
     def test_login_failed(self, user_type, expected_error):
-        with allure.step(f"Login với user: {user_type}"):
+        with allure.step(f"Log in with user: {user_type}"):
             self.do_login(user_type)
 
         with allure.step(f"Verify error: '{expected_error}'"):

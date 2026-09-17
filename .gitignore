@@ -1,12 +1,9 @@
-# virtual env
 .venv/
-
-# python cache
+.vscode/
 __pycache__/
 *.pyc
-
-# test cache
 .pytest_cache/
-
-# allure runtime output (KHÔNG commit)
 allure-results/
+reports/
+allure-reports/
+screenshots/

@@ -9,11 +9,11 @@ class CartPage(BasePage):
         self.checkout_button     = (By.ID, "checkout")
 
     def _item_name_locator(self, item_name: str):
-        """Tìm item theo tên trong cart"""
+        """Build a locator for an item by name in the cart."""
         return (By.XPATH, f'//div[@class="inventory_item_name"][text()="{item_name}"]')
 
     def _item_price_locator(self, item_name: str):
-        """Tìm giá của item theo tên"""
+        """Build a locator for an item's price by name."""
         return (By.XPATH, 
             f'//div[@class="inventory_item_name"][text()="{item_name}"]'
             f'/ancestor::div[@class="cart_item_label"]'

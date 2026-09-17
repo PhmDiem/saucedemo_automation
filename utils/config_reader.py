@@ -2,7 +2,7 @@ import json
 import os
 
 class ConfigReader:
-    """Đọc và cache các file JSON dùng chung cho framework test."""
+    """Read and cache shared JSON files used by the test framework."""
     _configs = {}
 
     # config_reader.py -> utils/ -> my_automation_project/ (project root)
@@ -10,22 +10,22 @@ class ConfigReader:
 
     @staticmethod
     def load_file(file_key, folder_name, file_name):
-        """Đọc 1 file JSON, cache theo file_key. Raise lỗi rõ ràng nếu có vấn đề."""
+        """Read one JSON file, cache it by file_key, and raise clear errors."""
         if file_key not in ConfigReader._configs:
             file_path = os.path.join(ConfigReader.BASE_DIR, folder_name, file_name)
 
             if not os.path.isfile(file_path):
-                raise FileNotFoundError(f"Không tìm thấy file: {file_path}")
+                raise FileNotFoundError(f"File not found: {file_path}")
 
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     ConfigReader._configs[file_key] = json.load(f)
             except json.JSONDecodeError as e:
-                raise ValueError(f"File '{file_path}' không đúng format JSON: {e}")
+                raise ValueError(f"File '{file_path}' is not valid JSON: {e}")
 
         return ConfigReader._configs[file_key]
 
-    # --- Các hàm lấy dữ liệu cụ thể ---
+    # --- Data access methods ---
 
     @staticmethod
     def get_config():
@@ -33,17 +33,17 @@ class ConfigReader:
     
     @staticmethod
     def get_users():
-        """Trả về dict các user từ users.json"""
+        """Return users from users.json."""
         users_data = ConfigReader.load_file("users", "data", "users.json")
         return users_data.get("users", {})
     
     @staticmethod
     def get_products():
-        """Lấy toàn bộ danh sách sản phẩm từ test_data.json"""
+        """Return all products from test_data.json."""
         data = ConfigReader.load_file("products", "data", "test_data.json")
         return data.get("products", {})
 
-    # --- Các hàm tiện ích gọi nhanh ---
+    # --- Convenience accessors ---
 
     @staticmethod
     def is_headless():
@@ -63,7 +63,7 @@ class ConfigReader:
 
     @staticmethod
     def get_timeout(timeout_type):
-        """Lấy timeout từ config (implicit_wait hoặc explicit_wait)"""
+        """Get a timeout from config (implicit_wait or explicit_wait)."""
         timeouts = ConfigReader.get_config().get("timeout", {})
         return timeouts.get(timeout_type)
     
@@ -77,15 +77,15 @@ class ConfigReader:
     
     @staticmethod
     def get_user(user_type):
-        """Lấy thông tin user theo user_type"""
+        """Get user data by user_type."""
         user = ConfigReader.get_users().get(user_type)
         if user is None:
-            raise KeyError(f"Không tìm thấy user_type '{user_type}' trong users.json")
+            raise KeyError(f"User type '{user_type}' not found in users.json")
         return user
     
     @staticmethod
     def get_product(product_key):
-        """Lấy thông tin của 1 sản phẩm theo key"""
+        """Get product data by key."""
         products = ConfigReader.get_products()
         return products.get(product_key)
     
@@ -93,19 +93,19 @@ class ConfigReader:
     def get_product_name(product_key):
         product = ConfigReader.get_product(product_key)
         if product is None:
-            raise KeyError(f"Không tìm thấy product_key '{product_key}' trong test_data.json")
+            raise KeyError(f"Product key '{product_key}' not found in test_data.json")
         return product.get("name")
     
     @staticmethod
     def get_product_price(product_key):
         product = ConfigReader.get_product(product_key)
         if product is None:
-            raise KeyError(f"Không tìm thấy product_key '{product_key}' trong test_data.json")
+            raise KeyError(f"Product key '{product_key}' not found in test_data.json")
         return product.get("price")
 
-    # --- Tiện ích quản lý cache ---
+    # --- Cache management ---
 
     @staticmethod
     def reload():
-        """Xóa cache để lần gọi tiếp theo đọc lại file JSON từ disk."""
+        """Clear the cache so the next call reloads JSON files from disk."""
         ConfigReader._configs.clear()

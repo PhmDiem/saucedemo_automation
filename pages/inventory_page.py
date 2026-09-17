@@ -30,68 +30,46 @@ class InventoryPage(BasePage):
 
     def get_inventory_items(self):
         return self.is_element_visible(self.inventory_items)
-    
-    def find_item(self, product_key):
+
+    def _get_product(self, product_key):
         product = ConfigReader.get_product(product_key)
-        item_link = (By.ID, product["add_to_cart_id"])
-        return self.find_element(item_link)
+        if product is None:
+            raise ValueError(f"Product not found: {product_key}")
+        return product
+
+    def _product_button_locator(self, product_key, action):
+        product = self._get_product(product_key)
+        return By.ID, product[f"{action}_id"]
+
+    def find_item(self, product_key):
+        return self.find_element(self._product_button_locator(product_key, "add_to_cart"))
     
     def is_inventory_item_displayed(self, product_key):
-        product = ConfigReader.get_product(product_key)
-        if not product:
-            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
-        
-        item_link = (By.ID, product["add_to_cart_id"])
-        return self.is_displayed(item_link)
+        return self.is_displayed(self._product_button_locator(product_key, "add_to_cart"))
 
     def click_inventory_item(self, product_key):
-        product = ConfigReader.get_product(product_key)
-        if not product:
-            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
-
-        # Click vào product item (dùng class inventory_item)
-        # Sau đó click vào product name link bên trong
+        product = self._get_product(product_key)
         product_name = product["name"]
         item_link = (By.XPATH, f'//div[@class="inventory_item"]//a[contains(., "{product_name}")]')
         self.click(item_link)
 
     def add_to_cart(self, product_key):
-        """Thêm sản phẩm vào giỏ hàng"""
-        product = ConfigReader.get_product(product_key)
-        if not product:
-            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
-        
-        add_btn = (By.ID, product["add_to_cart_id"])
-        self.click(add_btn)
+        """Add a product to the cart."""
+        self.click(self._product_button_locator(product_key, "add_to_cart"))
         return True
     
     def is_add_to_cart_button_displayed(self, product_key):
-        """Kiểm tra xem nút thêm vào giỏ hàng có hiển thị hay không"""
-        product = ConfigReader.get_product(product_key)
-        if not product:
-            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
-        
-        add_btn = (By.ID, product["add_to_cart_id"])
-        return self.is_displayed(add_btn)
+        """Check whether the add-to-cart button is visible."""
+        return self.is_displayed(self._product_button_locator(product_key, "add_to_cart"))
     
     def remove_from_cart(self, product_key):
-        """Xóa sản phẩm khỏi giỏ hàng"""
-        product = ConfigReader.get_product(product_key)
-        if not product:
-            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
-        
-        remove_btn = (By.ID, product["remove_id"])
-        self.click(remove_btn)
+        """Remove a product from the cart."""
+        self.click(self._product_button_locator(product_key, "remove"))
         return True
     
     def is_remove_button_displayed(self, product_key):
-        """Kiểm tra xem nút xóa có hiển thị hay không"""
-        product = ConfigReader.get_product(product_key)
-        if not product:
-            raise ValueError(f"Không tìm thấy sản phẩm: {product_key}")
-        
-        remove_btn = (By.ID, product["remove_id"])
-        return self.is_displayed(remove_btn)
+        """Check whether the remove button is visible."""
+        return self.is_displayed(self._product_button_locator(product_key, "remove"))
 
     def get_cart_count(self):
         return self.get_text(self.number_of_items_in_cart)

@@ -1,5 +1,6 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 from utils.config_reader import ConfigReader
 
 class BasePage:
@@ -10,7 +11,7 @@ class BasePage:
     def find_element(self, locator):
         try:
             return self.wait.until(EC.presence_of_element_located(locator))
-        except Exception as e:
+        except TimeoutException as e:
             raise AssertionError(f"Element {locator} not found within timeout: {e}")
 
     def find_elements(self, locator):
@@ -23,10 +24,10 @@ class BasePage:
         return self.wait.until(EC.visibility_of_element_located(locator)).is_displayed()
     
     def is_element_visible(self, locator):
-        """Check if element is visible, return False if not found (không throw exception)"""
+        """Check whether an element is visible; return False when not found."""
         try:
             return EC.visibility_of_element_located(locator)(self.driver) is not False
-        except:
+        except (NoSuchElementException, StaleElementReferenceException, TimeoutException):
             return False
     
     def get_text(self, locator):

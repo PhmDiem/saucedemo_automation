@@ -3,7 +3,7 @@ from pages.base_page import BasePage
 
 
 class CheckoutStepOnePage(BasePage):
-    """Checkout Step 1 — Điền thông tin"""
+    """Checkout Step 1 — Enter customer information."""
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -71,15 +71,15 @@ class CheckoutStepTwoPage(BasePage):
         return self.get_text(self.total)
 
     def get_subtotal_value(self) -> float:
-        """Lấy số từ 'Item total: $9.99' → 9.99"""
+        """Extract a number from 'Item total: $9.99' → 9.99."""
         return float(self.get_subtotal().replace("Item total: $", ""))
 
     def get_tax_value(self) -> float:
-        """Lấy số từ 'Tax: $0.80' → 0.80"""
+        """Extract a number from 'Tax: $0.80' → 0.80."""
         return float(self.get_tax().replace("Tax: $", ""))
 
     def get_total_value(self) -> float:
-        """Lấy số từ 'Total: $10.79' → 10.79"""
+        """Extract a number from 'Total: $10.79' → 10.79."""
         return float(self.get_total().replace("Total: $", ""))
 
     def click_finish(self):
